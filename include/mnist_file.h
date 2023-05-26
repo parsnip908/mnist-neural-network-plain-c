@@ -34,6 +34,10 @@ typedef struct mnist_dataset_t_ {
 
 mnist_dataset_t * mnist_get_dataset(const char * image_path, const char * label_path);
 void mnist_free_dataset(mnist_dataset_t * dataset);
+
+#ifndef MNIST_TESTER
 int mnist_batch(mnist_dataset_t * dataset, mnist_dataset_t * batch, int batch_size, int batch_number);
+#endif
+
 
 #endif
