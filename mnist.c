@@ -85,6 +85,10 @@ int main(int argc, char *argv[])
 
         printf("Step %04d\tAverage Loss: %.2f\tAccuracy: %.3f\n", i, loss / batch.size, accuracy);
     }
+    
+    printf("\nFinal Accuracy: %f\n", accuracy);
+
+/*****************************************/
 
     FILE * output = fopen("trained_net.c", "w+");
 
@@ -108,7 +112,42 @@ int main(int argc, char *argv[])
         else
             fprintf(output, "%e},\n\t{", network.W[i][MNIST_IMAGE_SIZE-1]);
     }
+
+    fclose(output);
     
+/*****************************************/
+
+    output = fopen("test_set.c", "w+");
+    
+    fprintf(output, "mnist_image_t images[50] = {\n");
+    for (int i = 0; i < 50; ++i)
+    {
+        fprintf(output, "{{\t");
+        for(int j = 0; j<MNIST_IMAGE_SIZE-1; j++)
+        {
+            fprintf(output, "%3d,", test_dataset->images[i].pixels[j]);
+            if((j+1) % 28 == 0)
+                fprintf(output, "\n\t");
+        }
+        if(i==49)
+            fprintf(output, "%3d}}\n};\n", test_dataset->images[i].pixels[MNIST_IMAGE_SIZE-1]);
+        else
+            fprintf(output, "%3d}},\n", test_dataset->images[i].pixels[MNIST_IMAGE_SIZE-1]);
+    }
+
+    fprintf(output, "\nuint8_t labels[50] = {\n\t");
+    for (int i = 0; i < 49; ++i)
+    {
+        fprintf(output, "%d, ", test_dataset->labels[i]);
+        if((i+1) % 10 == 0)
+            fprintf(output, "\n\t");
+    }
+    fprintf(output, "%d};\n\n", test_dataset->labels[49]);
+
+    fprintf(output, "mnist_dataset_t test_set = {images, labels, 50};\n");
+
+/*****************************************/
+
     // Cleanup
     mnist_free_dataset(train_dataset);
     mnist_free_dataset(test_dataset);

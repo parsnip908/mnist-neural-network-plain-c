@@ -1,3 +1,5 @@
 /.vscode/
 /mnist
 *.x
+gen_test_set.c
+out.txt
